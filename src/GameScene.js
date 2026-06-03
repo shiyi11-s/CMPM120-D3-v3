@@ -17,6 +17,7 @@ class GameScene extends Phaser.Scene {
 
     const floor = map.createLayer("Floor", tileset, 0, 0);
     const walls = map.createLayer("Walls", tileset, 0, 0);
+    map.createLayer("Objectlayer's tile", tileset, 0, 0);
 
     walls.setCollisionByExclusion([-1]);
 
@@ -35,7 +36,7 @@ class GameScene extends Phaser.Scene {
     this.spawnX = spawnObj.x - 16;
     this.spawnY = spawnObj.y + spawnObj.height / 2;
 
-    const goalX = goalObj.x + goalObj.width / 2;
+    const goalX = goalObj.x + goalObj.width / 2 - 12;
     const goalY = goalObj.y + goalObj.height / 2;
 
     this.add.text(goalX, goalY, "EXIT", {
@@ -44,7 +45,7 @@ class GameScene extends Phaser.Scene {
       color: "#ffd166",
     }).setOrigin(0.5);
 
-    this.goalZone = this.physics.add.image(goalX, goalY, "__DEFAULT").setVisible(false);
+    this.goalZone = this.physics.add.image(goalX + 24, goalY, "__DEFAULT").setVisible(false);
     this.goalZone.setDisplaySize(goalObj.width, goalObj.height);
     this.goalZone.body.allowGravity = false;
     this.goalZone.body.immovable = true;
@@ -67,6 +68,11 @@ class GameScene extends Phaser.Scene {
     this.marble.setCircle(10, 2, 2);
 
     this.physics.add.collider(this.marble, walls);
+    this.physics.add.overlap(this.marble, this.goalZone, () => this.onReachGoal(), null, this);
+
+    this.completed = false;
+    this.elapsedMs = 0;
+    this.deathCount = 0;
 
     this.tiltAngle = 0;
     this.draggingState = null;
@@ -104,6 +110,22 @@ class GameScene extends Phaser.Scene {
 
   onPointerUp() {
     this.draggingState = null;
+  }
+
+  onReachGoal() {
+    if (this.completed) return;
+    this.completed = true;
+
+    RUN.perLevel[this.level - 1] = {
+      timeMs: this.elapsedMs,
+      deaths: this.deathCount,
+    };
+    RUN.totalTimeMs += this.elapsedMs;
+    RUN.totalDeaths += this.deathCount;
+
+    this.marble.body.enable = false;
+    this.cameras.main.fadeOut(320, 0, 0, 0);
+    this.time.delayedCall(350, () => this.scene.start("SummaryScene", { level: this.level }));
   }
 
   applyTilt() {
