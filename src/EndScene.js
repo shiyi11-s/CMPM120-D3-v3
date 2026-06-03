@@ -24,51 +24,72 @@ class EndScene extends Phaser.Scene {
       });
     }
 
-    const marble = this.add.image(W / 2, 150, "marble").setScale(3);
-    this.tweens.add({
-      targets: marble, scale: 3.4, yoyo: true,
-      duration: 900, repeat: -1, ease: "sine.inOut",
-    });
-
-    this.add.text(W / 2, 240, "all levels complete!", {
+    this.add.text(W / 2, 80, "all clear!", {
       fontFamily: "ui-monospace, monospace",
-      fontSize: "34px",
+      fontSize: "48px",
       color: "#ffd166",
       stroke: "#3b2a08",
       strokeThickness: 4,
     }).setOrigin(0.5);
 
-    const lines = [];
-    for (let i = 0; i < RUN.perLevel.length; i++) {
-      const s = RUN.perLevel[i];
-      const m  = Math.floor(s.timeMs / 60000);
-      const sec = Math.floor((s.timeMs % 60000) / 1000);
-      const cs = Math.floor((s.timeMs % 1000) / 10);
+    const colX = [W / 2 - 220, W / 2, W / 2 + 220];
+    const labels = ["level 1", "level 2", "level 3"];
+
+    for (let i = 0; i < 3; i++) {
+      const x = colX[i];
+      const stats = RUN.perLevel[i] || { timeMs: 0, deaths: 0 };
+      const m  = Math.floor(stats.timeMs / 60000);
+      const sec = Math.floor((stats.timeMs % 60000) / 1000);
+      const cs = Math.floor((stats.timeMs % 1000) / 10);
       const t = String(m).padStart(2,"0") + ":" + String(sec).padStart(2,"0") + "." + String(cs).padStart(2,"0");
-      lines.push("level " + (i + 1) + "    " + t + "    deaths " + s.deaths);
+
+      this.add.text(x, 180, labels[i], {
+        fontFamily: "ui-monospace, monospace",
+        fontSize: "18px",
+        color: "#a89cd8",
+      }).setOrigin(0.5);
+
+      this.add.text(x, 230, t, {
+        fontFamily: "ui-monospace, monospace",
+        fontSize: "26px",
+        color: "#e5deff",
+      }).setOrigin(0.5);
+
+      this.add.text(x, 272, stats.deaths + " deaths", {
+        fontFamily: "ui-monospace, monospace",
+        fontSize: "16px",
+        color: "#ff8b8b",
+      }).setOrigin(0.5);
     }
-    this.add.text(W / 2, 320, lines.join("\n"), {
-      fontFamily: "ui-monospace, monospace",
-      fontSize: "18px",
-      color: "#d8d0ff",
-      align: "center",
-      lineSpacing: 6,
-    }).setOrigin(0.5);
+
+    this.add.line(W / 2, 340, -W / 2 + 60, 0, W / 2 - 60, 0, 0x4a3a6a).setLineWidth(1);
 
     const tm = Math.floor(RUN.totalTimeMs / 60000);
     const ts = Math.floor((RUN.totalTimeMs % 60000) / 1000);
     const tc = Math.floor((RUN.totalTimeMs % 1000) / 10);
     const totalT = String(tm).padStart(2,"0") + ":" + String(ts).padStart(2,"0") + "." + String(tc).padStart(2,"0");
 
-    this.add.text(W / 2, 430, "total time:   " + totalT, {
+    this.add.text(W / 2 - 100, 390, "total time", {
       fontFamily: "ui-monospace, monospace",
-      fontSize: "22px",
+      fontSize: "16px",
+      color: "#a89cd8",
+    }).setOrigin(0.5);
+
+    this.add.text(W / 2 - 100, 430, totalT, {
+      fontFamily: "ui-monospace, monospace",
+      fontSize: "28px",
       color: "#e5deff",
     }).setOrigin(0.5);
 
-    this.add.text(W / 2, 460, "total deaths: " + RUN.totalDeaths, {
+    this.add.text(W / 2 + 100, 390, "total deaths", {
       fontFamily: "ui-monospace, monospace",
-      fontSize: "22px",
+      fontSize: "16px",
+      color: "#a89cd8",
+    }).setOrigin(0.5);
+
+    this.add.text(W / 2 + 100, 430, String(RUN.totalDeaths), {
+      fontFamily: "ui-monospace, monospace",
+      fontSize: "28px",
       color: "#ff8b8b",
     }).setOrigin(0.5);
 

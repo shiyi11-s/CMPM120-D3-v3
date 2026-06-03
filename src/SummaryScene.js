@@ -13,18 +13,12 @@ class SummaryScene extends Phaser.Scene {
 
     this.add.tileSprite(0, 0, W, H, "bg").setOrigin(0, 0);
 
-    this.add.rectangle(W / 2, H / 2, 460, 320, 0x1a1230, 0.92).setStrokeStyle(3, 0xffd166);
+    this.add.rectangle(W / 2, H / 2, 520, 300, 0x1a1230, 0.92).setStrokeStyle(3, 0xffd166);
 
-    this.add.text(W / 2, H / 2 - 122, "level clear!", {
+    this.add.text(W / 2, H / 2 - 120, "level " + this.level + " clear!", {
       fontFamily: "ui-monospace, monospace",
-      fontSize: "34px",
+      fontSize: "32px",
       color: "#ffd166",
-    }).setOrigin(0.5);
-
-    this.add.text(W / 2, H / 2 - 70, "level " + this.level, {
-      fontFamily: "ui-monospace, monospace",
-      fontSize: "20px",
-      color: "#c2b6ff",
     }).setOrigin(0.5);
 
     const stats = RUN.perLevel[this.level - 1] || { timeMs: 0, deaths: 0 };
@@ -33,30 +27,33 @@ class SummaryScene extends Phaser.Scene {
     const cs = Math.floor((stats.timeMs % 1000) / 10);
     const tFmt = String(m).padStart(2,"0") + ":" + String(s).padStart(2,"0") + "." + String(cs).padStart(2,"0");
 
-    this.add.text(W / 2, H / 2 - 18, "time:   " + tFmt, {
-      fontFamily: "ui-monospace, monospace",
-      fontSize: "24px",
-      color: "#e5deff",
-    }).setOrigin(0.5);
-
-    this.add.text(W / 2, H / 2 + 18, "deaths: " + stats.deaths, {
-      fontFamily: "ui-monospace, monospace",
-      fontSize: "24px",
-      color: "#ff8b8b",
-    }).setOrigin(0.5);
-
-    let teaser = "";
-    if (this.level === 1) teaser = "next: 1 hazard and larger map!!!";
-    else if (this.level === 2) teaser = "next: 2 hazards, more larger map!!!";
-    else teaser = "you have reached the final summary.";
-
-    this.add.text(W / 2, H / 2 + 76, teaser, {
+    this.add.text(W / 2 - 100, H / 2 - 20, "time", {
       fontFamily: "ui-monospace, monospace",
       fontSize: "16px",
       color: "#a89cd8",
     }).setOrigin(0.5);
 
-    const next = this.add.text(W / 2 + 130, H / 2 + 122, "[ next → ]", {
+    this.add.text(W / 2 - 100, H / 2 + 24, tFmt, {
+      fontFamily: "ui-monospace, monospace",
+      fontSize: "28px",
+      color: "#e5deff",
+    }).setOrigin(0.5);
+
+    this.add.line(W / 2, H / 2 - 30, 0, 0, 0, 120, 0x4a3a6a).setLineWidth(1);
+
+    this.add.text(W / 2 + 100, H / 2 - 20, "deaths", {
+      fontFamily: "ui-monospace, monospace",
+      fontSize: "16px",
+      color: "#a89cd8",
+    }).setOrigin(0.5);
+
+    this.add.text(W / 2 + 100, H / 2 + 24, String(stats.deaths), {
+      fontFamily: "ui-monospace, monospace",
+      fontSize: "28px",
+      color: "#ff8b8b",
+    }).setOrigin(0.5);
+
+    const next = this.add.text(W / 2, H / 2 + 110, "[ next → ]", {
       fontFamily: "ui-monospace, monospace",
       fontSize: "22px",
       color: "#ffd166",
