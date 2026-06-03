@@ -19,8 +19,8 @@ class MenuScene extends Phaser.Scene {
     this.add.text(w / 2, 188, "MAZE", {
       fontFamily: "ui-monospace, monospace",
       fontSize: "84px",
-      color: "#a080ff",
-      stroke: "#1f1438",
+      color: "#e33cd3",
+      stroke: "#2d126a",
       strokeThickness: 6,
     }).setOrigin(0.5);
 
@@ -39,7 +39,6 @@ class MenuScene extends Phaser.Scene {
       "",
       "controls:",
       "  hold + drag mouse to rotate the maze,",
-      "  Y to toggle the orange shortcut wall,",
       "  R to reset marble to spawn.",
     ];
     this.add.text(w / 2, 390, rules.join("\n"), {
