@@ -69,6 +69,7 @@ class GameScene extends Phaser.Scene {
 
     this.physics.add.collider(this.marble, walls);
     this.physics.add.overlap(this.marble, this.goalZone, () => this.onReachGoal(), null, this);
+    this.physics.add.overlap(this.marble, this.deathGroup, () => this.onDeath(), null, this);
 
     this.completed = false;
     this.elapsedMs = 0;
@@ -112,6 +113,14 @@ class GameScene extends Phaser.Scene {
     this.draggingState = null;
   }
 
+  onDeath() {
+    if (this.completed) return;
+    this.deathCount += 1;
+    this.cameras.main.shake(160, 0.008);
+    this.marble.setVelocity(0, 0);
+    this.marble.setPosition(this.spawnX, this.spawnY);
+  }
+
   onReachGoal() {
     if (this.completed) return;
     this.completed = true;
@@ -126,6 +135,20 @@ class GameScene extends Phaser.Scene {
     this.marble.body.enable = false;
     this.cameras.main.fadeOut(320, 0, 0, 0);
     this.time.delayedCall(350, () => this.scene.start("SummaryScene", { level: this.level }));
+  }
+
+  update(time, dt) {
+    if (this.completed) return;
+    this.elapsedMs += dt;
+
+    const m = this.marble;
+    const map = this.cache.tilemap.get("level" + this.level).data;
+    const safeR = Math.max(map.width, map.height) * map.tilewidth * 0.9;
+    const cx = map.width * map.tilewidth / 2;
+    const cy = map.height * map.tileheight / 2;
+    if (Math.hypot(m.x - cx, m.y - cy) > safeR) {
+      this.onDeath();
+    }
   }
 
   applyTilt() {
